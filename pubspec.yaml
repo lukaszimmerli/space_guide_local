@@ -33,6 +33,7 @@ dependencies:
   crypto: ^3.0.3
   flutter_svg: ^2.0.10
   flutter_markdown: ^0.7.4+1
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
@@ -50,9 +51,9 @@ flutter:
     - .env
 
   fonts:
-    - family: Leckerly
+    - family: NovaSquare
       fonts:
-        - asset: assets/fonts/Leckerli_One/LeckerliOne-Regular.ttf
+        - asset: assets/fonts/Nova_Square/NovaSquare-Regular.ttf
     - family: IBMPlexSans
       fonts:
         - asset: assets/fonts/IBM_Plex_Sans/IBMPlexSans-Regular.ttf

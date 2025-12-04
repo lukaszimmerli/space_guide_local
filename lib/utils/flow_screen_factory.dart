@@ -1,5 +1,6 @@
 import 'package:carbon_icons/carbon_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flow_manager_saas/flow_manager.dart';
 import 'package:provider/provider.dart';
@@ -252,10 +253,10 @@ class _FlowDetailScreenWrapperState extends State<_FlowDetailScreenWrapper> {
       flowId: flowId,
       flowTitle: flowTitle,
       // Configure Carbon Icons for FlowDetailScreen
-      deleteIcon: const Icon(CarbonIcons.trash_can, size: 24),
+      deleteIcon: const Icon(CupertinoIcons.delete, size: 24),
       editIcon: const Icon(CarbonIcons.edit, size: 24),
       addStepIcon: const Icon(CarbonIcons.add_alt, size: 24),
-      duplicateIcon: const Icon(CarbonIcons.copy, size: 24),
+      duplicateIcon: const Icon(CupertinoIcons.doc_on_doc, size: 24),
       sectionMoreOptionsIcon: const Icon(
         CarbonIcons.overflow_menu_vertical,
         size: 26,
@@ -295,7 +296,7 @@ class _FlowDetailScreenWrapperState extends State<_FlowDetailScreenWrapper> {
       recordVideoIcon: const Icon(CarbonIcons.video, size: 24),
       videoGalleryIcon: const Icon(CarbonIcons.document_video, size: 24),
       existingAssetIcon: const Icon(CarbonIcons.copy, size: 24),
-      settingsIcon: const Icon(CarbonIcons.settings, size: 28),
+      settingsIcon: const Icon(CupertinoIcons.gear, size: 28),
       // Add AI button when AI features are enabled
       customActions:
           isAiFeaturesEnabled
@@ -335,7 +336,7 @@ class _FlowDetailScreenWrapperState extends State<_FlowDetailScreenWrapper> {
           stepId: stepId,
           sectionId: sectionId,
           flowId: flowId,
-          deleteIcon: const Icon(CarbonIcons.trash_can, size: 24),
+          deleteIcon: const Icon(CupertinoIcons.delete, size: 24),
           addIcon: const Icon(CarbonIcons.add, size: 34),
           closeIcon: const Icon(CarbonIcons.close, size: 36),
           cameraIcon: const Icon(CarbonIcons.camera, size: 24),

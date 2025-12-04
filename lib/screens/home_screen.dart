@@ -37,10 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: const Text(
-            'SpaceGuides',
-            style: TextStyle(fontSize: 42, fontFamily: 'Leckerly'),
+            'spaceguide',
+            style: TextStyle(fontSize: 36, fontFamily: 'NovaSquare'),
           ),
         ),
+        scrolledUnderElevation: 0,
         actions: [
           // AI Tools Menu
           Consumer<SettingsService>(
@@ -103,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(CarbonIcons.search, size: 26),
+            icon: const Icon(CupertinoIcons.search, size: 26),
             tooltip: 'Search',
             onPressed: () {
               setState(() {
@@ -112,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(CarbonIcons.settings, size: 26),
+            icon: const Icon(CarbonIcons.user, size: 26),
             tooltip: 'Settings',
             onPressed: () {
               Navigator.push(
@@ -141,110 +142,118 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Padding(
                 padding: screenPadding.toEdgeInsets(),
                 child: FlowListView(
-                key: _flowListKey,
-                enableFlowCreation: true,
-                enableSearch: _showSearch,
-                groupByCategory: true,
-                createFlowIcon: Icon(CarbonIcons.add, size: 40),
-                deleteIcon: Icon(CupertinoIcons.delete, size: 24),
-                editIcon: Icon(CarbonIcons.edit, size: 24),
-                duplicateIcon: Icon(CarbonIcons.copy, size: 24),
-                shareIcon: Icon(CarbonIcons.share, size: 24),
-                searchIcon: Icon(CarbonIcons.search, size: 24),
-                qrIcon: Icon(CarbonIcons.qr_code, size: 24),
-                qrExportIcon: Icon(CarbonIcons.qr_code, size: 24),
-                defaultThumbnailIcon: Icon(
-                  CarbonIcons.carousel_horizontal,
-                  size: 30,
-                ),
-                showLanguageFlag: settingsService.showLanguageFlag,
-                // Local share functionality only
-                onShare: (flow) => _shareFlow(context, flow),
-                onQRExport: (flow) => _exportFlowQR(context, flow),
-                onCreated: (flow) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              FlowScreenFactory.createFlowDetailScreen(
-                                flowId: flow.id,
-                                flowTitle:
-                                    flow.title.isNotEmpty
-                                        ? flow.title
-                                        : 'Untitled Flow',
+                  key: _flowListKey,
+                  enableFlowCreation: true,
+                  enableSearch: _showSearch,
+                  groupByCategory: true,
+                  searchIcon: Icon(CarbonIcons.search, size: 24),
+                  qrIcon: Icon(CupertinoIcons.qrcode_viewfinder, size: 24),
+                  createFlowIcon: Icon(
+                    CarbonIcons.add,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                  deleteIcon: Icon(CupertinoIcons.delete, size: 24),
+                  editIcon: Icon(CarbonIcons.edit, size: 24),
+                  duplicateIcon: Icon(CupertinoIcons.doc_on_doc, size: 24),
+                  shareIcon: Icon(CarbonIcons.share, size: 24),
+                  createFlowButtonColor: Theme.of(context).colorScheme.primary,
+                  qrFlashIcon: CupertinoIcons.lightbulb,
+                  qrCameraSwitchIcon: CupertinoIcons.camera_rotate,
+                  qrExportIcon: Icon(CarbonIcons.qr_code, size: 24),
+                  defaultThumbnailIcon: Icon(
+                    CarbonIcons.carousel_horizontal,
+                    size: 30,
+                  ),
+                  showLanguageFlag: settingsService.showLanguageFlag,
+                  // Local share functionality only
+                  onShare: (flow) => _shareFlow(context, flow),
+                  onQRExport: (flow) => _exportFlowQR(context, flow),
+                  onCreated: (flow) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                FlowScreenFactory.createFlowDetailScreen(
+                                  flowId: flow.id,
+                                  flowTitle:
+                                      flow.title.isNotEmpty
+                                          ? flow.title
+                                          : 'Untitled Flow',
+                                ),
+                      ),
+                    ).then((_) {
+                      // Reload the flow list when returning from flow creation
+                      setState(() {
+                        _flowListKey = UniqueKey();
+                      });
+                    });
+                  },
+                  onSelected: (flowData) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => FlowPlayerScreen(
+                              flow: flowData,
+                              // Configure Carbon Icons for FlowStatisticsScreen
+                              pdfExportIcon: Icon(
+                                CarbonIcons.document_pdf,
+                                size: 24,
                               ),
-                    ),
-                  ).then((_) {
-                    // Reload the flow list when returning from flow creation
-                    setState(() {
-                      _flowListKey = UniqueKey();
+                              printIcon: Icon(CarbonIcons.printer, size: 24),
+                              shareIcon: Icon(CarbonIcons.share, size: 24),
+                              previewIcon: Icon(CarbonIcons.view, size: 24),
+                              playIcon: Icon(
+                                CarbonIcons.play_filled_alt,
+                                size: 80,
+                              ),
+                              pdfIcon: const Icon(
+                                CarbonIcons.document_pdf,
+                                size: 80,
+                              ),
+                              timerIcon: CarbonIcons.timer,
+                              timePlotIcon: CarbonIcons.time_plot,
+                              listIcon: CarbonIcons.list,
+                              calendarIcon: CarbonIcons.calendar,
+                              // Timer completion callback
+                              onTimerCompleted:
+                                  TimerAudioService.playTimerCompletionSound,
+                            ),
+                      ),
+                    ).then((_) {
+                      // Called when returning from FlowPlayerScreen
+                      _setOrientationConstraints();
                     });
-                  });
-                },
-                onSelected: (flowData) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => FlowPlayerScreen(
-                            flow: flowData,
-                            // Configure Carbon Icons for FlowStatisticsScreen
-                            pdfExportIcon: Icon(
-                              CarbonIcons.document_pdf,
-                              size: 24,
-                            ),
-                            printIcon: Icon(CarbonIcons.printer, size: 24),
-                            shareIcon: Icon(CarbonIcons.share, size: 24),
-                            previewIcon: Icon(CarbonIcons.view, size: 24),
-                            playIcon: Icon(
-                              CarbonIcons.play_filled_alt,
-                              size: 80,
-                            ),
-                            pdfIcon: const Icon(
-                              CarbonIcons.document_pdf,
-                              size: 80,
-                            ),
-                            timerIcon: CarbonIcons.timer,
-                            timePlotIcon: CarbonIcons.time_plot,
-                            listIcon: CarbonIcons.list,
-                            calendarIcon: CarbonIcons.calendar,
-                            // Timer completion callback
-                            onTimerCompleted:
-                                TimerAudioService.playTimerCompletionSound,
-                          ),
-                    ),
-                  ).then((_) {
-                    // Called when returning from FlowPlayerScreen
-                    _setOrientationConstraints();
-                  });
-                },
-                onEdit: (flowData) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => FlowScreenFactory.createFlowDetailScreen(
-                            flowId: flowData.id,
-                            flowTitle:
-                                flowData.title.isNotEmpty
-                                    ? flowData.title
-                                    : 'Untitled Flow',
-                          ),
-                    ),
-                  ).then((_) {
-                    // Called when returning from FlowDetailScreen
-                    _setOrientationConstraints();
-                    // Reload the flow list to reflect any changes
-                    setState(() {
-                      _flowListKey = UniqueKey();
+                  },
+                  onEdit: (flowData) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                FlowScreenFactory.createFlowDetailScreen(
+                                  flowId: flowData.id,
+                                  flowTitle:
+                                      flowData.title.isNotEmpty
+                                          ? flowData.title
+                                          : 'Untitled Flow',
+                                ),
+                      ),
+                    ).then((_) {
+                      // Called when returning from FlowDetailScreen
+                      _setOrientationConstraints();
+                      // Reload the flow list to reflect any changes
+                      setState(() {
+                        _flowListKey = UniqueKey();
+                      });
                     });
-                  });
-                },
+                  },
+                ),
               ),
             ),
-          ),
-        );
+          );
         },
       ),
     );
