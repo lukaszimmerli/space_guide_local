@@ -36,7 +36,8 @@ class SettingsService extends ChangeNotifier {
   bool get showStatistics => _showStatistics;
   bool get showLanguageFlag => _showLanguageFlag;
   String? get openaiApiKey => _openaiApiKey;
-  bool get isAiFeaturesEnabled => _openaiApiKey != null && _openaiApiKey!.isNotEmpty;
+  bool get isAiFeaturesEnabled =>
+      _openaiApiKey != null && _openaiApiKey!.isNotEmpty;
   String get themeMode => _themeMode;
 
   // Load settings from SharedPreferences
@@ -103,18 +104,6 @@ class SettingsService extends ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_showStatisticsKey, _showStatistics);
-
-    notifyListeners();
-  }
-
-  // Set show language flag setting directly
-  Future<void> setShowLanguageFlag(bool value) async {
-    if (_showLanguageFlag == value) return;
-
-    _showLanguageFlag = value;
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_showLanguageFlagKey, _showLanguageFlag);
 
     notifyListeners();
   }

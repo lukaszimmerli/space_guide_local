@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(left: 8.0),
-          child: const Text('Flows', style: TextStyle(fontSize: 36)),
+          child: const Text('SpaceGuides', style: TextStyle(fontSize: 36)),
         ),
         actions: [
           // AI Tools Menu

@@ -8,7 +8,7 @@
 ## Instructions:
 
 1. Place your Space Guide app icon as `space_guide_icon.png` in this folder
-2. For Android adaptive icons, create a foreground version as `flowxr_icon_foreground.png`
+2. For Android adaptive icons, create a foreground version as `space_guide_icon_foreground.png`
 3. Update the background and theme colors in `pubspec.yaml` under `flutter_icons`
 4. Run the icon generation command: `dart run flutter_launcher_icons`
 

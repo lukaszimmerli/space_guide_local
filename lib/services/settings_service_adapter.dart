@@ -36,8 +36,4 @@ class SettingsServiceAdapter extends FlowPlayerSettings {
   @override
   Future<void> setShowStatistics(bool value) =>
       _settingsService.setShowStatistics(value);
-
-  @override
-  Future<void> setShowLanguageFlag(bool value) =>
-      _settingsService.setShowLanguageFlag(value);
 }

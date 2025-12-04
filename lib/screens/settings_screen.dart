@@ -602,26 +602,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 12),
-
-                // Language Flag Display Toggle
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: ListTile(
-                    title: const Text('Show Language Flags'),
-                    subtitle: const Padding(
-                      padding: EdgeInsets.only(bottom: 4.0),
-                      child: Text('Display language flags in flow cards.'),
-                    ),
-                    trailing: Switch(
-                      value: settingsService.showLanguageFlag,
-                      onChanged: (value) {
-                        settingsService.setShowLanguageFlag(value);
-                      },
-                    ),
-                  ),
-                ),
-
                 const SizedBox(height: 24),
 
                 // AI Features Section
