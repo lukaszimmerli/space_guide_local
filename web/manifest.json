@@ -1,11 +1,11 @@
 {
-    "name": "FlowXR",
-    "short_name": "FlowXR",
+    "name": "Space Guide",
+    "short_name": "Space Guide",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#hexcode",
-    "theme_color": "#hexcode",
-    "description": "FlowXR - Interactive flow management application.",
+    "background_color": "#1a1a2e",
+    "theme_color": "#1a1a2e",
+    "description": "Space Guide - Interactive flow management application.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

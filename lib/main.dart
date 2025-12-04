@@ -87,7 +87,7 @@ class FlowManagerApp extends StatelessWidget {
           }
 
           return MaterialApp(
-            title: 'FlowXR',
+            title: 'Space Guide',
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: themeMode,

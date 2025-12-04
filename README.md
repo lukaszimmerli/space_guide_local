@@ -1,6 +1,6 @@
-# FlowXR - Local Example
+# Space Guide
 
-A lightweight Flutter application demonstrating the Flow Manager package with **local-only storage** and offline capabilities.
+A lightweight Flutter application for interactive flow management with **local-only storage** and offline capabilities.
 
 ## Features
 

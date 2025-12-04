@@ -1,5 +1,5 @@
-name: flowxr
-description: FlowXR - Example application for flow_manager package
+name: space_guide
+description: Space Guide - Interactive flow management application
 publish_to: 'none'
 version: 1.0.0+1
 

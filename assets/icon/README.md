@@ -1,13 +1,13 @@
-# FlowXR App Icons
+# Space Guide App Icons
 
 ## Required Files:
 
-1. **flowxr_icon.png** - Your main app icon (1024x1024px minimum)
-2. **flowxr_icon_foreground.png** - Foreground layer for Android adaptive icons (1024x1024px)
+1. **space_guide_icon.png** - Your main app icon (1024x1024px minimum)
+2. **space_guide_icon_foreground.png** - Foreground layer for Android adaptive icons (1024x1024px)
 
 ## Instructions:
 
-1. Place your FlowXR app icon as `flowxr_icon.png` in this folder
+1. Place your Space Guide app icon as `space_guide_icon.png` in this folder
 2. For Android adaptive icons, create a foreground version as `flowxr_icon_foreground.png`
 3. Update the background and theme colors in `pubspec.yaml` under `flutter_icons`
 4. Run the icon generation command: `dart run flutter_launcher_icons`
