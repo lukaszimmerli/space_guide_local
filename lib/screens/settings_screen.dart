@@ -296,11 +296,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 8),
               Text(
                 'Existing: "$existingTitle"',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 'Importing: "$newTitle"',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
               const Text('Do you want to replace the existing flow?'),
@@ -424,7 +428,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
     );
 
-    if (confirmed == true) {
+    if (confirmed == true && mounted) {
       try {
         final settingsService = Provider.of<SettingsService>(
           context,
@@ -456,22 +460,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final screenPadding = DeviceUtils.getStandardScreenPadding(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: Consumer<SettingsService>(
-        builder: (context, settingsService, _) {
-          return SafeArea(
-            child: ListView(
-              padding: screenPadding.toEdgeInsets(bottom: 16.0),
-              children: [
+      appBar: AppBar(
+        title: const Text('Settings'),
+        scrolledUnderElevation: 0,
+      ),
+      body: CustomPaint(
+        painter: DottedBackgroundPainter(
+          brightness: Theme.of(context).brightness,
+        ),
+        child: Consumer<SettingsService>(
+          builder: (context, settingsService, _) {
+            return SafeArea(
+              child: ListView(
+                padding: screenPadding.toEdgeInsets(bottom: 16.0),
+                children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 12.0, left: 14.0),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0, left: 14.0),
                       child: Text(
                         'Flow Management',
-                        style: TextStyle(
-                          fontSize: 18,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -499,11 +509,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
 
                 // Reading Settings Section
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 12.0, left: 14.0),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0, left: 14.0),
                   child: Text(
                     'Player',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
 
@@ -559,21 +571,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'App Appearance',
-                          style: TextStyle(
-                            fontSize: 16,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         Text(
                           'Select the app theme mode.',
-                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
                           child: SegmentedButton<String>(
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.resolveWith(
+                                (states) {
+                                  if (states.contains(WidgetState.selected)) {
+                                    return Theme.of(context).colorScheme.primary;
+                                  }
+                                  return null;
+                                },
+                              ),
+                              foregroundColor: WidgetStateProperty.resolveWith(
+                                (states) {
+                                  if (states.contains(WidgetState.selected)) {
+                                    return Theme.of(context).colorScheme.onPrimary;
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
                             segments: const [
                               ButtonSegment(
                                 value: 'light',
@@ -605,11 +636,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 24),
 
                 // AI Features Section
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 12.0, left: 14.0),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0, left: 14.0),
                   child: Text(
                     'AI Features',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
 
@@ -644,15 +677,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Text('Enable AI features by providing an API key.'),
+                        Text(
+                          'Enable AI features by providing an API key.',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                         const SizedBox(height: 16),
                         TextField(
                           controller: _apiKeyController,
                           obscureText: _obscureApiKey,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Theme.of(context).colorScheme.surfaceContainer,
                             labelText: 'API Key',
                             hintText: 'sk-...',
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscureApiKey
@@ -681,9 +721,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 const SizedBox(width: 4),
                                 Text(
                                   'AI features enabled',
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context).colorScheme.primary,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -735,10 +774,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 16),
 
                 // Add more settings sections here as needed
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

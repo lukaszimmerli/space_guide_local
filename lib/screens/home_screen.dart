@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _showSearch = false;
+  Key _flowListKey = UniqueKey();
 
   @override
   void didChangeDependencies() {
@@ -35,7 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(left: 8.0),
-          child: const Text('SpaceGuides', style: TextStyle(fontSize: 36)),
+          child: const Text(
+            'SpaceGuides',
+            style: TextStyle(fontSize: 42, fontFamily: 'Leckerly'),
+          ),
         ),
         actions: [
           // AI Tools Menu
@@ -129,10 +133,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 4.0, // Custom reduced padding for phone on home screen
           );
 
-          return SafeArea(
-            child: Padding(
-              padding: screenPadding.toEdgeInsets(),
-              child: FlowListView(
+          return CustomPaint(
+            painter: DottedBackgroundPainter(
+              brightness: Theme.of(context).brightness,
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding: screenPadding.toEdgeInsets(),
+                child: FlowListView(
+                key: _flowListKey,
                 enableFlowCreation: true,
                 enableSearch: _showSearch,
                 groupByCategory: true,
@@ -152,21 +161,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Local share functionality only
                 onShare: (flow) => _shareFlow(context, flow),
                 onQRExport: (flow) => _exportFlowQR(context, flow),
-                onCreated:
-                    (flow) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                FlowScreenFactory.createFlowDetailScreen(
-                                  flowId: flow.id,
-                                  flowTitle:
-                                      flow.title.isNotEmpty
-                                          ? flow.title
-                                          : 'Untitled Flow',
-                                ),
-                      ),
+                onCreated: (flow) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              FlowScreenFactory.createFlowDetailScreen(
+                                flowId: flow.id,
+                                flowTitle:
+                                    flow.title.isNotEmpty
+                                        ? flow.title
+                                        : 'Untitled Flow',
+                              ),
                     ),
+                  ).then((_) {
+                    // Reload the flow list when returning from flow creation
+                    setState(() {
+                      _flowListKey = UniqueKey();
+                    });
+                  });
+                },
                 onSelected: (flowData) {
                   Navigator.push(
                     context,
@@ -220,11 +235,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ).then((_) {
                     // Called when returning from FlowDetailScreen
                     _setOrientationConstraints();
+                    // Reload the flow list to reflect any changes
+                    setState(() {
+                      _flowListKey = UniqueKey();
+                    });
                   });
                 },
               ),
             ),
-          );
+          ),
+        );
         },
       ),
     );

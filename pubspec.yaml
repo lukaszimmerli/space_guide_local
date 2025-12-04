@@ -47,8 +47,15 @@ flutter:
     - assets/icon/
     - assets/translations/
     - assets/audio/
-    - packages/flow_manager/assets/audio/
     - .env
+
+  fonts:
+    - family: Leckerly
+      fonts:
+        - asset: assets/fonts/Leckerli_One/LeckerliOne-Regular.ttf
+    - family: IBMPlexSans
+      fonts:
+        - asset: assets/fonts/IBM_Plex_Sans/IBMPlexSans-Regular.ttf
 
 flutter_launcher_icons:
   android: true
