@@ -1,0 +1,14 @@
+{
+    "common.close": "Close",
+    "step_list_view.no_steps": "No steps in this section yet.",
+    "step_list_view.add_step": "Add Step",
+    "step_list_view.delete_title": "Delete Step?",
+    "step_list_view.delete_subtitle": "This step and all its associated \n assets will be permanently deleted.",
+    "step_list_view.deleted_success": "Step and associated assets deleted successfully",
+    "step_list_view.delete_error": "Error deleting step",
+    "step_list_view.loading": "Loading...",
+    "step_list_view.error_prefix": "Error: ",
+    "step_list_view.no_flow_loaded": "No flow loaded.",
+    "step_list_view.no_sections": "This flow has no sections yet.",
+    "flow_list_view.create_title": "Create"
+}
