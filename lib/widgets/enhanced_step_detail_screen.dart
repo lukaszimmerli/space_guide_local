@@ -83,7 +83,7 @@ class _EnhancedStepDetailScreenState extends State<EnhancedStepDetailScreen> {
         padding: const EdgeInsets.only(right: 12.0),
         child: IconButton(
           icon: SvgPicture.asset(
-            'assets/icon/noun-ai-star-6056248.svg',
+            'assets/icon/write-ai.svg',
             width: 26,
             height: 26,
             colorFilter: ColorFilter.mode(

@@ -61,7 +61,7 @@ class _FlowAiChatSheetState extends State<FlowAiChatSheet> {
       _messages.add(
         _ChatMessage(
           text:
-              'Hi! I can help you modify this flow. Try asking me to:\n\n'
+              'Hi! I can help you modify this guide. Try asking me to:\n\n'
               '• Add a new section\n'
               '• Add steps to a section\n'
               '• Rename a section\n'
@@ -135,14 +135,14 @@ class _FlowAiChatSheetState extends State<FlowAiChatSheet> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Flow Assistant',
+                        'Guide Assistant',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        'Modify your flow with natural language',
+                        'Modify your guide with natural language',
                         style: TextStyle(
                           fontSize: 12,
                           color: Theme.of(
@@ -224,7 +224,7 @@ class _FlowAiChatSheetState extends State<FlowAiChatSheet> {
                       controller: _messageController,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
-                        hintText: 'Ask me to modify your flow...',
+                        hintText: 'Ask me to modify your guide...',
                         hintStyle: TextStyle(
                           color: Theme.of(
                             context,
@@ -297,7 +297,7 @@ class _FlowAiChatSheetState extends State<FlowAiChatSheet> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: SvgPicture.asset(
-                'assets/icon/noun-ai-star-6056248.svg',
+                'assets/icon/ai.svg',
                 width: 16,
                 height: 16,
                 colorFilter: ColorFilter.mode(

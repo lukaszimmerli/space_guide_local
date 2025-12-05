@@ -63,8 +63,8 @@ flutter_launcher_icons:
   ios: true
   web:
     generate: true
-    image_path: "assets/icon/space_guide_icon.png"
+    image_path: "assets/icon/spaceguide_icon.png"
     background_color: "#hexcode"
     theme_color: "#hexcode"
-  image_path: "assets/icon/space_guide_icon.png"
+  image_path: "assets/icon/spaceguide_icon.png"
   adaptive_icon_background: "#ffffff"

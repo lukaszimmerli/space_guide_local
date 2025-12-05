@@ -36,73 +36,27 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(left: 8.0),
-          child: const Text(
-            'spaceguide',
-            style: TextStyle(fontSize: 36, fontFamily: 'NovaSquare'),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 6.0),
+                child: Image.asset(
+                  'assets/icon/spaceguide_icon_transparent_nobounds.png',
+                  height: 32,
+                  width: 32,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'spaceguide',
+                style: TextStyle(fontSize: 36, fontFamily: 'NovaSquare'),
+              ),
+            ],
           ),
         ),
         scrolledUnderElevation: 0,
         actions: [
-          // AI Tools Menu
-          Consumer<SettingsService>(
-            builder: (context, settingsService, _) {
-              // Show AI tools menu if AI features are enabled
-              if (settingsService.isAiFeaturesEnabled) {
-                return PopupMenuButton<String>(
-                  icon: SvgPicture.asset(
-                    'assets/icon/noun-ai-star-6056248.svg',
-                    width: 26,
-                    height: 26,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).colorScheme.onSurface,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  tooltip: 'AI Tools',
-                  itemBuilder:
-                      (context) => const [
-                        PopupMenuItem(
-                          value: 'translate',
-                          child: Row(
-                            children: [
-                              Icon(CarbonIcons.translate),
-                              SizedBox(width: 8),
-                              Text('Translate Flow'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'tts',
-                          child: Row(
-                            children: [
-                              Icon(CarbonIcons.microphone),
-                              SizedBox(width: 8),
-                              Text('Generate Audio'),
-                            ],
-                          ),
-                        ),
-                      ],
-                  onSelected: (value) {
-                    switch (value) {
-                      case 'translate':
-                        showDialog(
-                          context: context,
-                          builder: (context) => const FlowTranslationDialog(),
-                        );
-                        break;
-                      case 'tts':
-                        showDialog(
-                          context: context,
-                          builder: (context) => const FlowTtsGenerationDialog(),
-                        );
-                        break;
-                    }
-                  },
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
           IconButton(
             icon: const Icon(CupertinoIcons.search, size: 26),
             tooltip: 'Search',
@@ -250,6 +204,70 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                     });
                   },
+                  // Custom AI menu items for flow dropdown
+                  customMenuItems:
+                      settingsService.isAiFeaturesEnabled
+                          ? (flow) {
+                            final menuItems = <PopupMenuEntry<String>>[];
+
+                            // Add Translate option
+                            menuItems.add(
+                              PopupMenuItem<String>(
+                                value: 'translate',
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/icon/translate-ai.svg',
+                                      width: 24,
+                                      height: 24,
+                                      colorFilter: ColorFilter.mode(
+                                        Theme.of(context).colorScheme.onSurface,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Text('Translate Flow'),
+                                  ],
+                                ),
+                              ),
+                            );
+
+                            // Add TTS Generation option
+                            menuItems.add(
+                              PopupMenuItem<String>(
+                                value: 'tts',
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/icon/mic-ai.svg',
+                                      width: 24,
+                                      height: 24,
+                                      colorFilter: ColorFilter.mode(
+                                        Theme.of(context).colorScheme.onSurface,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Text('Generate Audio'),
+                                  ],
+                                ),
+                              ),
+                            );
+
+                            return menuItems;
+                          }
+                          : null,
+                  // Handle custom AI actions
+                  onCustomAction: (flow, action) {
+                    switch (action) {
+                      case 'translate':
+                        _showTranslationDialog(context, flow);
+                        break;
+                      case 'tts':
+                        _showTtsDialog(context, flow);
+                        break;
+                    }
+                  },
                 ),
               ),
             ),
@@ -295,5 +313,21 @@ class _HomeScreenState extends State<HomeScreen> {
         FlowUtils.showErrorSnackBar(context, 'Error exporting QR code: $e');
       }
     }
+  }
+
+  /// Show the translation dialog for a flow
+  void _showTranslationDialog(BuildContext context, FlowData flow) {
+    showDialog(
+      context: context,
+      builder: (context) => FlowTranslationDialog(flow: flow),
+    );
+  }
+
+  /// Show the TTS generation dialog for a flow
+  void _showTtsDialog(BuildContext context, FlowData flow) {
+    showDialog(
+      context: context,
+      builder: (context) => FlowTtsGenerationDialog(flow: flow),
+    );
   }
 }

@@ -2,235 +2,141 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flow_manager_saas/flow_manager.dart';
-import 'package:carbon_icons/carbon_icons.dart';
 import '../services/flow_translation_service.dart';
 
 class FlowTranslationDialog extends StatefulWidget {
-  final String? initialFlowId;
+  final FlowData flow;
 
-  const FlowTranslationDialog({super.key, this.initialFlowId});
+  const FlowTranslationDialog({
+    super.key,
+    required this.flow,
+  });
 
   @override
   State<FlowTranslationDialog> createState() => _FlowTranslationDialogState();
 }
 
 class _FlowTranslationDialogState extends State<FlowTranslationDialog> {
-  FlowData? _selectedFlow;
   String? _targetLanguage;
   bool _isTranslating = false;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<FlowData>>(
-      future: Provider.of<FlowNotifier>(context, listen: false).refreshFlows(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
+    return AlertDialog(
+      title: Row(
+        children: [
+          const Icon(Icons.translate),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Translate "${widget.flow.title.isNotEmpty ? widget.flow.title : 'Untitled Flow'}"',
+              overflow: TextOverflow.ellipsis,
             ),
-            content: const SizedBox(
-              height: 100,
-              child: Center(child: CircularProgressIndicator()),
-            ),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            title: const Text('Error'),
-            content: Text('Failed to load flows: ${snapshot.error}'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Close'),
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: 500,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Source language (read-only)
+            Text(
+              'Source Language',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          );
-        }
-
-        final flows = snapshot.data ?? [];
-
-        // Pre-select flow if initialFlowId is provided
-        if (widget.initialFlowId != null && _selectedFlow == null) {
-          final matchingFlow =
-              flows.where((f) => f.id == widget.initialFlowId).firstOrNull;
-          if (matchingFlow != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                setState(() {
-                  _selectedFlow = matchingFlow;
-                });
-              }
-            });
-          }
-        }
-
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          title: const Row(
-            children: [
-              Icon(CarbonIcons.translate),
-              SizedBox(width: 8),
-              Text('Translate Flow'),
-            ],
-          ),
-          content: SizedBox(
-            width: 500,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Flow selection
-                const SizedBox(height: 12),
-                const Text('Select Flow to Translate'),
-                const SizedBox(height: 12),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<FlowData>(
-                      focusColor: Colors.transparent,
-                      value: _selectedFlow,
-                      hint: const Text('Choose a flow...'),
-                      isExpanded: true,
-                      items:
-                          flows.map((flow) {
-                            return DropdownMenuItem<FlowData>(
-                              value: flow,
-                              child: Text(
-                                flow.title.isNotEmpty
-                                    ? flow.title
-                                    : 'Untitled Flow',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                      onChanged: (flow) {
-                        setState(() {
-                          _selectedFlow = flow;
-                        });
-                      },
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  if (LanguageSelector.getLanguageFlag(
+                        widget.flow.language,
+                      ) !=
+                      null) ...[
+                    Text(
+                      LanguageSelector.getLanguageFlag(
+                        widget.flow.language,
+                      )!,
+                      style: const TextStyle(fontSize: 18),
                     ),
-                  ),
-                ),
-
-                if (_selectedFlow != null) ...[
-                  const SizedBox(height: 24),
-
-                  // Source language (read-only)
+                    const SizedBox(width: 8),
+                  ],
                   Text(
-                    'Source Language',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                    LanguageSelector.getLanguageName(
+                      widget.flow.language,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        if (LanguageSelector.getLanguageFlag(
-                              _selectedFlow!.language,
-                            ) !=
-                            null) ...[
-                          Text(
-                            LanguageSelector.getLanguageFlag(
-                              _selectedFlow!.language,
-                            )!,
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          const SizedBox(width: 8),
-                        ],
-                        Text(
-                          LanguageSelector.getLanguageName(
-                            _selectedFlow!.language,
-                          ),
-                          style: const TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Target language selector
-                  Text(
-                    'Target Language',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  LanguageSelector(
-                    selectedLanguage: _targetLanguage ?? 'en',
-                    onLanguageChanged: (language) {
-                      setState(() {
-                        _targetLanguage = language;
-                      });
-                    },
-                    enabled: !_isTranslating,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ],
-              ],
+              ),
             ),
-          ),
-          actions: [
-            Row(
-              children: [
-                TextButton(
-                  onPressed:
-                      _isTranslating ? null : () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed:
-                      _selectedFlow != null &&
-                              _targetLanguage != null &&
-                              _targetLanguage != _selectedFlow!.language &&
-                              !_isTranslating
-                          ? _translateFlow
-                          : null,
-                  child:
-                      _isTranslating
-                          ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                          : const Text('Translate'),
-                ),
-              ],
+
+            const SizedBox(height: 16),
+
+            // Target language selector
+            Text(
+              'Target Language',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            LanguageSelector(
+              selectedLanguage: _targetLanguage ?? 'en',
+              onLanguageChanged: (language) {
+                setState(() {
+                  _targetLanguage = language;
+                });
+              },
+              enabled: !_isTranslating,
             ),
           ],
-        );
-      },
+        ),
+      ),
+      actions: [
+        Row(
+          children: [
+            TextButton(
+              onPressed:
+                  _isTranslating ? null : () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            const Spacer(),
+            ElevatedButton(
+              onPressed:
+                  _targetLanguage != null &&
+                          _targetLanguage != widget.flow.language &&
+                          !_isTranslating
+                      ? _translateFlow
+                      : null,
+              child:
+                  _isTranslating
+                      ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                      : Text('Translate'),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
   Future<void> _translateFlow() async {
-    if (_selectedFlow == null || _targetLanguage == null) return;
+    if (_targetLanguage == null) return;
 
     setState(() {
       _isTranslating = true;
@@ -239,23 +145,23 @@ class _FlowTranslationDialogState extends State<FlowTranslationDialog> {
     try {
       // Convert flow to JSON format for translation
       final flowData = {
-        'id': _selectedFlow!.id,
-        'title': _selectedFlow!.title,
-        'subtitle': _selectedFlow!.subtitle,
-        'description': _selectedFlow!.description,
-        'language': _selectedFlow!.language,
+        'id': widget.flow.id,
+        'title': widget.flow.title,
+        'subtitle': widget.flow.subtitle,
+        'description': widget.flow.description,
+        'language': widget.flow.language,
         'flowSections':
-            _selectedFlow!.flowSections
+            widget.flow.flowSections
                 .map((section) => section.toJson())
                 .toList(),
         'flowSteps':
-            _selectedFlow!.flowSteps.map((step) => step.toJson()).toList(),
+            widget.flow.flowSteps.map((step) => step.toJson()).toList(),
       };
 
       // Translate the flow
       final translatedFlowData = await FlowTranslationService.translateFlow(
         flowData,
-        sourceLanguageCode: _selectedFlow!.language,
+        sourceLanguageCode: widget.flow.language,
         targetLanguageCode: _targetLanguage!,
       );
 
@@ -266,7 +172,7 @@ class _FlowTranslationDialogState extends State<FlowTranslationDialog> {
       // Create a translated duplicate directly
       final translatedFlow = await _createTranslatedDuplicate(
         flowNotifier,
-        _selectedFlow!,
+        widget.flow,
         translatedFlowData,
         _targetLanguage!,
       );

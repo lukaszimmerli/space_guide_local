@@ -303,9 +303,9 @@ class _FlowDetailScreenWrapperState extends State<_FlowDetailScreenWrapper> {
               ? [
                 IconButton(
                   icon: SvgPicture.asset(
-                    'assets/icon/noun-ai-star-6056248.svg',
-                    width: 26,
-                    height: 26,
+                    'assets/icon/chat-ai-round.svg',
+                    width: 28,
+                    height: 28,
                     colorFilter: ColorFilter.mode(
                       Theme.of(context).colorScheme.onSurface,
                       BlendMode.srcIn,

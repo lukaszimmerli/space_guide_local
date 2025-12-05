@@ -127,6 +127,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // Load the imported flow to get its details
           final importedFlow = await storageService.loadFlow(flowId);
 
+          // Notify that flows have changed so the flow list refreshes
+          if (!context.mounted) return;
+          final flowNotifier = Provider.of<FlowNotifier>(context, listen: false);
+          flowNotifier.notifyFlowsChanged();
+
           // Hide loading dialog
           if (!context.mounted) return;
           Navigator.of(context).pop();
@@ -661,7 +666,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Row(
                           children: [
                             SvgPicture.asset(
-                              'assets/icon/noun-ai-star-6056248.svg',
+                              'assets/icon/ai.svg',
                               width: 26,
                               height: 26,
                               colorFilter: ColorFilter.mode(
