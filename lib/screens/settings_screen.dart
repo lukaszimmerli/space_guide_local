@@ -129,7 +129,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // Notify that flows have changed so the flow list refreshes
           if (!context.mounted) return;
-          final flowNotifier = Provider.of<FlowNotifier>(context, listen: false);
+          final flowNotifier = Provider.of<FlowNotifier>(
+            context,
+            listen: false,
+          );
           flowNotifier.notifyFlowsChanged();
 
           // Hide loading dialog
@@ -301,15 +304,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 8),
               Text(
                 'Existing: "$existingTitle"',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
                 'Importing: "$newTitle"',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               const Text('Do you want to replace the existing flow?'),
@@ -465,10 +468,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final screenPadding = DeviceUtils.getStandardScreenPadding(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        scrolledUnderElevation: 0,
-      ),
+      appBar: AppBar(title: const Text('Settings'), scrolledUnderElevation: 0),
       body: CustomPaint(
         painter: DottedBackgroundPainter(
           brightness: Theme.of(context).brightness,
@@ -479,306 +479,325 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: ListView(
                 padding: screenPadding.toEdgeInsets(bottom: 16.0),
                 children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0, left: 14.0),
-                      child: Text(
-                        'Flow Management',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 12.0,
+                          left: 14.0,
+                        ),
+                        child: Text(
+                          'Flow Management',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
-                    ),
 
-                    // Import Flow Button
-                    Card(
-                      margin: EdgeInsets.zero,
-                      child: ListTile(
-                        title: const Text('Import Flow'),
-                        subtitle: const Padding(
-                          padding: EdgeInsets.only(bottom: 4.0),
-                          child: Text('Import a flow from a .flow file'),
-                        ),
-                        onTap: () => _importFlow(context),
-                        leading: const Icon(
-                          CarbonIcons.document_import,
-                          size: 34,
+                      // Import Flow Button
+                      Card(
+                        margin: EdgeInsets.zero,
+                        child: ListTile(
+                          title: const Text('Import Flow'),
+                          subtitle: const Padding(
+                            padding: EdgeInsets.only(bottom: 4.0),
+                            child: Text('Import a flow from a .flow file'),
+                          ),
+                          onTap: () => _importFlow(context),
+                          leading: const Icon(
+                            CarbonIcons.document_import,
+                            size: 34,
+                          ),
                         ),
                       ),
-                    ),
 
-                    const SizedBox(height: 24),
-                  ],
-                ),
-
-                // Reading Settings Section
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0, left: 14.0),
-                  child: Text(
-                    'Player',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
-                ),
 
-                // Auto-Read Toggle
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: ListTile(
-                    title: const Text('Auto Read Text'),
-                    subtitle: const Padding(
-                      padding: EdgeInsets.only(bottom: 4.0),
-                      child: Text('Read step aloud when navigating.'),
-                    ),
-                    trailing: Switch(
-                      value: settingsService.autoReadEnabled,
-                      onChanged: (value) {
-                        settingsService.setAutoReadEnabled(value);
-                      },
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // Statistics Display Toggle
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: ListTile(
-                    title: const Text('Show Statistics'),
-                    subtitle: const Padding(
-                      padding: EdgeInsets.only(bottom: 4.0),
-                      child: Text(
-                        'Show time spent and other metrics at the end of a flow.',
+                  // Reading Settings Section
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0, left: 14.0),
+                    child: Text(
+                      'Player',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    trailing: Switch(
-                      value: settingsService.showStatistics,
-                      onChanged: (value) {
-                        settingsService.setShowStatistics(value);
-                      },
+                  ),
+
+                  // Auto-Read Toggle
+                  Card(
+                    margin: EdgeInsets.zero,
+                    child: ListTile(
+                      title: const Text('Auto Read Text'),
+                      subtitle: const Padding(
+                        padding: EdgeInsets.only(bottom: 4.0),
+                        child: Text('Read step aloud when navigating.'),
+                      ),
+                      trailing: Switch(
+                        value: settingsService.autoReadEnabled,
+                        onChanged: (value) {
+                          settingsService.setAutoReadEnabled(value);
+                        },
+                      ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 12.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'App Appearance',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
+                  // Statistics Display Toggle
+                  Card(
+                    margin: EdgeInsets.zero,
+                    child: ListTile(
+                      title: const Text('Show Statistics'),
+                      subtitle: const Padding(
+                        padding: EdgeInsets.only(bottom: 4.0),
+                        child: Text(
+                          'Show time spent and other metrics at the end of a flow.',
                         ),
-                        Text(
-                          'Select the app theme mode.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          child: SegmentedButton<String>(
-                            style: ButtonStyle(
-                              backgroundColor: WidgetStateProperty.resolveWith(
-                                (states) {
-                                  if (states.contains(WidgetState.selected)) {
-                                    return Theme.of(context).colorScheme.primary;
-                                  }
-                                  return null;
-                                },
-                              ),
-                              foregroundColor: WidgetStateProperty.resolveWith(
-                                (states) {
-                                  if (states.contains(WidgetState.selected)) {
-                                    return Theme.of(context).colorScheme.onPrimary;
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            segments: const [
-                              ButtonSegment(
-                                value: 'light',
-                                label: Text('Light'),
-                                icon: Icon(CarbonIcons.sun, size: 18),
-                              ),
-                              ButtonSegment(
-                                value: 'dark',
-                                label: Text('Dark'),
-                                icon: Icon(CarbonIcons.moon, size: 18),
-                              ),
-                              ButtonSegment(
-                                value: 'system',
-                                label: Text('System'),
-                                icon: Icon(CarbonIcons.settings, size: 18),
-                              ),
-                            ],
-                            selected: {settingsService.themeMode},
-                            onSelectionChanged: (Set<String> newSelection) {
-                              settingsService.setThemeMode(newSelection.first);
-                            },
-                          ),
-                        ),
-                      ],
+                      ),
+                      trailing: Switch(
+                        value: settingsService.showStatistics,
+                        onChanged: (value) {
+                          settingsService.setShowStatistics(value);
+                        },
+                      ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 24),
+                  const SizedBox(height: 12),
 
-                // AI Features Section
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0, left: 14.0),
-                  child: Text(
-                    'AI Features',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      top: 22.0,
-                      bottom: 16.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/icon/ai.svg',
-                              width: 26,
-                              height: 26,
-                              colorFilter: ColorFilter.mode(
-                                Theme.of(context).colorScheme.onSurface,
-                                BlendMode.srcIn,
+                  Card(
+                    margin: EdgeInsets.zero,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 12.0,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'App Appearance',
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            'Select the app theme mode.',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(
+                              color:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            child: SegmentedButton<String>(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith((states) {
+                                      if (states.contains(
+                                        WidgetState.selected,
+                                      )) {
+                                        return Theme.of(
+                                          context,
+                                        ).colorScheme.primary;
+                                      }
+                                      return null;
+                                    }),
+                                foregroundColor:
+                                    WidgetStateProperty.resolveWith((states) {
+                                      if (states.contains(
+                                        WidgetState.selected,
+                                      )) {
+                                        return Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimary;
+                                      }
+                                      return null;
+                                    }),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'OpenAI API Key',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Enable AI features by providing an API key.',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _apiKeyController,
-                          obscureText: _obscureApiKey,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Theme.of(context).colorScheme.surfaceContainer,
-                            labelText: 'API Key',
-                            hintText: 'sk-...',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscureApiKey
-                                    ? CarbonIcons.view_off
-                                    : CarbonIcons.view,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscureApiKey = !_obscureApiKey;
-                                });
+                              segments: const [
+                                ButtonSegment(
+                                  value: 'light',
+                                  label: Text('Light'),
+                                  icon: Icon(CarbonIcons.sun, size: 18),
+                                ),
+                                ButtonSegment(
+                                  value: 'dark',
+                                  label: Text('Dark'),
+                                  icon: Icon(CarbonIcons.moon, size: 18),
+                                ),
+                                ButtonSegment(
+                                  value: 'system',
+                                  label: Text('System'),
+                                  icon: Icon(CarbonIcons.settings, size: 18),
+                                ),
+                              ],
+                              selected: {settingsService.themeMode},
+                              onSelectionChanged: (Set<String> newSelection) {
+                                settingsService.setThemeMode(
+                                  newSelection.first,
+                                );
                               },
                             ),
                           ),
-                          onChanged: (value) {},
-                        ),
-                        if (settingsService.isAiFeaturesEnabled)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 12.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  CarbonIcons.checkmark_filled,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'AI features enabled',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        const SizedBox(height: 20),
-
-                        settingsService.isAiFeaturesEnabled
-                            ? ElevatedButton(
-                              onPressed: () => _clearApiKey(context),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor:
-                                    Theme.of(context).colorScheme.error,
-                                backgroundColor:
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.grey.shade900
-                                        : Theme.of(
-                                          context,
-                                        ).colorScheme.errorContainer,
-                                minimumSize: const Size(120, 40),
-                              ),
-                              child: const Text('Clear'),
-                            )
-                            : ElevatedButton(
-                              onPressed: () => _saveApiKey(context),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.grey.shade900
-                                        : Theme.of(
-                                          context,
-                                        ).colorScheme.primaryContainer,
-                                foregroundColor:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimaryContainer,
-                                minimumSize: const Size(120, 40),
-                              ),
-                              child: const Text('Save'),
-                            ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 16),
+                  const SizedBox(height: 24),
 
-                // Add more settings sections here as needed
+                  // AI Features Section
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0, left: 14.0),
+                    child: Text(
+                      'AI Features',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  Card(
+                    margin: EdgeInsets.zero,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                        top: 22.0,
+                        bottom: 16.0,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icon/ai.svg',
+                                width: 26,
+                                height: 26,
+                                colorFilter: ColorFilter.mode(
+                                  Theme.of(context).colorScheme.onSurface,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'OpenAI API Key',
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Enable AI features by providing an API key.',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _apiKeyController,
+                            obscureText: _obscureApiKey,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainer,
+                              labelText: 'API Key',
+                              hintText: 'sk-...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscureApiKey
+                                      ? CarbonIcons.view_off
+                                      : CarbonIcons.view,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscureApiKey = !_obscureApiKey;
+                                  });
+                                },
+                              ),
+                            ),
+                            onChanged: (value) {},
+                          ),
+                          if (settingsService.isAiFeaturesEnabled)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 12.0),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    CarbonIcons.checkmark_filled,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'AI features enabled',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          const SizedBox(height: 20),
+
+                          settingsService.isAiFeaturesEnabled
+                              ? ElevatedButton(
+                                onPressed: () => _clearApiKey(context),
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor:
+                                      Theme.of(context).colorScheme.error,
+                                  backgroundColor:
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.grey.shade900
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.errorContainer,
+                                  minimumSize: const Size(120, 40),
+                                ),
+                                child: const Text('Clear'),
+                              )
+                              : ElevatedButton(
+                                onPressed: () => _saveApiKey(context),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.grey.shade900
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.onPrimaryContainer,
+                                  foregroundColor:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  minimumSize: const Size(120, 40),
+                                ),
+                                child: const Text('Save'),
+                              ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Add more settings sections here as needed
                 ],
               ),
             );

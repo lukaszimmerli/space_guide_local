@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.spaceguide.app"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36  // Required by mobile_scanner plugin
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -24,7 +24,7 @@ android {
         applicationId = "com.spaceguide.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 23  // Required by mobile_scanner plugin
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
