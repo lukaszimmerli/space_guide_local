@@ -342,6 +342,237 @@ class MixpanelService {
     _mixpanel?.getPeople().increment('total_guides_played', 1);
   }
 
+  // Guide Lifecycle Events
+  static void trackGuideEdited({
+    required String guideId,
+    required String category,
+    required String language,
+    required int numberOfSections,
+    required int numberOfSteps,
+  }) {
+    _mixpanel?.track(
+      'Guide Edited',
+      properties: {
+        'guide_id': guideId,
+        'category': category,
+        'language': language,
+        'number_of_sections': numberOfSections,
+        'number_of_steps': numberOfSteps,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  static void trackGuideDuplicated({
+    required String originalGuideId,
+    required String newGuideId,
+    required String category,
+    required String language,
+  }) {
+    _mixpanel?.track(
+      'Guide Duplicated',
+      properties: {
+        'original_guide_id': originalGuideId,
+        'new_guide_id': newGuideId,
+        'category': category,
+        'language': language,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+    _mixpanel?.getPeople().increment('total_guides_duplicated', 1);
+  }
+
+  static void trackGuideDeleted({
+    required String guideId,
+    required String category,
+    required String language,
+    required int numberOfSteps,
+  }) {
+    _mixpanel?.track(
+      'Guide Deleted',
+      properties: {
+        'guide_id': guideId,
+        'category': category,
+        'language': language,
+        'number_of_steps': numberOfSteps,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+    _mixpanel?.getPeople().increment('total_guides_deleted', 1);
+  }
+
+  static void trackGuideExported({
+    required String guideId,
+    required String exportType, // 'file', 'share'
+    required String category,
+    required String language,
+  }) {
+    _mixpanel?.track(
+      'Guide Exported',
+      properties: {
+        'guide_id': guideId,
+        'export_type': exportType,
+        'category': category,
+        'language': language,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+    _mixpanel?.getPeople().increment('total_guides_exported', 1);
+  }
+
+  static void trackGuideImported({
+    required String guideId,
+    required String importSource, // 'qr_code', 'file'
+    required String category,
+    required String language,
+    required int numberOfSteps,
+  }) {
+    _mixpanel?.track(
+      'Guide Imported',
+      properties: {
+        'guide_id': guideId,
+        'import_source': importSource,
+        'category': category,
+        'language': language,
+        'number_of_steps': numberOfSteps,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+    _mixpanel?.getPeople().increment('total_guides_imported', 1);
+  }
+
+  static void trackGuideShared({
+    required String guideId,
+    required String category,
+    required String language,
+    required int numberOfSteps,
+  }) {
+    _mixpanel?.track(
+      'Guide Shared',
+      properties: {
+        'guide_id': guideId,
+        'category': category,
+        'language': language,
+        'number_of_steps': numberOfSteps,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+    _mixpanel?.getPeople().increment('total_guides_shared', 1);
+  }
+
+  // Section Events
+  static void trackSectionAdded({
+    required String guideId,
+    required String sectionId,
+    required String sectionTitle,
+    required int sectionOrder,
+  }) {
+    _mixpanel?.track(
+      'Section Added',
+      properties: {
+        'guide_id': guideId,
+        'section_id': sectionId,
+        'section_title': sectionTitle,
+        'section_order': sectionOrder,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  static void trackSectionDeleted({
+    required String guideId,
+    required String sectionId,
+    required int stepsInSection,
+  }) {
+    _mixpanel?.track(
+      'Section Deleted',
+      properties: {
+        'guide_id': guideId,
+        'section_id': sectionId,
+        'steps_in_section': stepsInSection,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  // Step Events
+  static void trackStepAdded({
+    required String guideId,
+    required String sectionId,
+    required String stepId,
+    required int stepOrder,
+    required bool hasMedia,
+  }) {
+    _mixpanel?.track(
+      'Step Added',
+      properties: {
+        'guide_id': guideId,
+        'section_id': sectionId,
+        'step_id': stepId,
+        'step_order': stepOrder,
+        'has_media': hasMedia,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+    _mixpanel?.getPeople().increment('total_steps_created', 1);
+  }
+
+  static void trackStepEdited({
+    required String guideId,
+    required String stepId,
+    required bool hasMedia,
+    required bool hasAudio,
+    required bool hasTimer,
+  }) {
+    _mixpanel?.track(
+      'Step Edited',
+      properties: {
+        'guide_id': guideId,
+        'step_id': stepId,
+        'has_media': hasMedia,
+        'has_audio': hasAudio,
+        'has_timer': hasTimer,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  static void trackStepDeleted({
+    required String guideId,
+    required String sectionId,
+    required String stepId,
+  }) {
+    _mixpanel?.track(
+      'Step Deleted',
+      properties: {
+        'guide_id': guideId,
+        'section_id': sectionId,
+        'step_id': stepId,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  // Media Events
+  static void trackMediaAdded({
+    required String guideId,
+    required String stepId,
+    required String mediaType, // 'image', 'video', 'audio', 'file'
+    required String source, // 'camera', 'gallery', 'file_picker', 'recorded'
+  }) {
+    _mixpanel?.track(
+      'Media Added',
+      properties: {
+        'guide_id': guideId,
+        'step_id': stepId,
+        'media_type': mediaType,
+        'source': source,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+    _mixpanel?.getPeople().increment('total_media_added', 1);
+  }
+
   // Flush events (useful before app termination)
   static void flush() {
     _mixpanel?.flush();

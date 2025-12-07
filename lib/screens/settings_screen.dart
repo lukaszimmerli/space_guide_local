@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flow_manager_saas/flow_manager.dart';
 import 'package:archive/archive.dart';
 import '../services/settings_service.dart';
+import '../services/mixpanel_service.dart';
 import '../utils/flow_screen_factory.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -138,6 +139,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // Hide loading dialog
           if (!context.mounted) return;
           Navigator.of(context).pop();
+
+          // Track guide imported
+          MixpanelService.trackGuideImported(
+            guideId: importedFlow.id,
+            importSource: 'file',
+            category: importedFlow.category,
+            language: importedFlow.language,
+            numberOfSteps: importedFlow.flowSteps.length,
+          );
 
           // Show success message
           FlowUtils.showSuccessSnackBar(

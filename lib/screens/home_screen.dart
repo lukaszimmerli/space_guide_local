@@ -133,6 +133,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Local share functionality only
                   onShare: (flow) => _shareFlow(context, flow),
                   onQRExport: (flow) => _exportFlowQR(context, flow),
+                  onDeleted: (flow) {
+                    // Track guide deleted
+                    MixpanelService.trackGuideDeleted(
+                      guideId: flow.id,
+                      category: flow.category,
+                      language: flow.language,
+                      numberOfSteps: flow.flowSteps.length,
+                    );
+                  },
+                  onDuplicated: (originalFlow, newFlow) {
+                    // Track guide duplicated
+                    MixpanelService.trackGuideDuplicated(
+                      originalGuideId: originalFlow.id,
+                      newGuideId: newFlow.id,
+                      category: newFlow.category,
+                      language: newFlow.language,
+                    );
+                  },
                   onCreated: (flow) {
                     // Track guide creation
                     MixpanelService.trackGuideCreated(
@@ -176,12 +194,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     MixpanelService.incrementGuidePlayCount();
 
                     // Calculate average step length for detailed metrics
-                    final avgStepLength = flowData.flowSteps.isEmpty
-                        ? 0.0
-                        : flowData.flowSteps
-                                .map((s) => s.description.length)
-                                .reduce((a, b) => a + b) /
-                            flowData.flowSteps.length;
+                    final avgStepLength =
+                        flowData.flowSteps.isEmpty
+                            ? 0.0
+                            : flowData.flowSteps
+                                    .map((s) => s.description.length)
+                                    .reduce((a, b) => a + b) /
+                                flowData.flowSteps.length;
 
                     // Track guide played with detailed metrics
                     MixpanelService.trackGuidePlayed(
@@ -237,6 +256,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                   },
                   onEdit: (flowData) {
+                    // Track guide edited
+                    MixpanelService.trackGuideEdited(
+                      guideId: flowData.id,
+                      category: flowData.category,
+                      language: flowData.language,
+                      numberOfSections: flowData.flowSections.length,
+                      numberOfSteps: flowData.flowSteps.length,
+                    );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -347,6 +374,13 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Share a flow locally using the device share functionality
   Future<void> _shareFlow(BuildContext context, FlowData flow) async {
     try {
+      // Track guide shared
+      MixpanelService.trackGuideShared(
+        guideId: flow.id,
+        category: flow.category,
+        language: flow.language,
+        numberOfSteps: flow.flowSteps.length,
+      );
       await exportAndShareFlow(context, flow);
     } catch (e) {
       if (mounted) {

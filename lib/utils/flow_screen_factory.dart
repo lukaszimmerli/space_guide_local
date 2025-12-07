@@ -6,6 +6,7 @@ import 'package:flow_manager_saas/flow_manager.dart';
 import 'package:provider/provider.dart';
 import '../services/settings_service.dart';
 import '../services/flow_ai_state_service.dart';
+import '../services/mixpanel_service.dart';
 import '../widgets/enhanced_step_detail_screen.dart';
 import '../widgets/flow_ai_chat_dialog.dart';
 
@@ -347,6 +348,25 @@ class _FlowDetailScreenWrapperState extends State<_FlowDetailScreenWrapper> {
           videoGalleryIcon: const Icon(CarbonIcons.document_video, size: 24),
           filePickerIcon: const Icon(CarbonIcons.folder, size: 24),
           timerIcon: const Icon(CarbonIcons.timer, size: 20),
+        );
+      },
+      // Track step creation
+      onStepCreated: (step, assets) {
+        MixpanelService.trackStepAdded(
+          guideId: flowId,
+          sectionId: step.flowSectionId,
+          stepId: step.id,
+          stepOrder: step.order,
+          hasMedia: assets.isNotEmpty,
+        );
+      },
+      // Track section creation
+      onSectionCreated: (section) {
+        MixpanelService.trackSectionAdded(
+          guideId: flowId,
+          sectionId: section.id,
+          sectionTitle: section.title,
+          sectionOrder: section.order,
         );
       },
     );
