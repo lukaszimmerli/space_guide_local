@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'mixpanel_service.dart';
 
 /// Service to manage user settings and preferences
 class SettingsService extends ChangeNotifier {
@@ -110,6 +111,7 @@ class SettingsService extends ChangeNotifier {
 
   // Set OpenAI API key
   Future<void> setOpenAiApiKey(String apiKey) async {
+    final wasEnabled = isAiFeaturesEnabled;
     _openaiApiKey = apiKey.trim();
 
     if (_openaiApiKey!.isEmpty) {
@@ -118,6 +120,14 @@ class SettingsService extends ChangeNotifier {
     }
 
     await _secureStorage.write(key: _openaiApiKeyKey, value: _openaiApiKey);
+
+    // Track AI features toggle if state changed
+    final isNowEnabled = isAiFeaturesEnabled;
+    if (wasEnabled != isNowEnabled) {
+      MixpanelService.trackAiFeaturesToggled(enabled: isNowEnabled);
+      MixpanelService.setUserProperty('ai_features_enabled', isNowEnabled);
+    }
+
     notifyListeners();
   }
 
@@ -125,6 +135,11 @@ class SettingsService extends ChangeNotifier {
   Future<void> clearOpenAiApiKey() async {
     _openaiApiKey = null;
     await _secureStorage.delete(key: _openaiApiKeyKey);
+
+    // Track AI features disabled
+    MixpanelService.trackAiFeaturesToggled(enabled: false);
+    MixpanelService.setUserProperty('ai_features_enabled', false);
+
     notifyListeners();
   }
 

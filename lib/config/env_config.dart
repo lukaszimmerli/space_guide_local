@@ -12,6 +12,7 @@ class EnvConfig {
   static int _maxVideoWidth = 1280;
   static int _maxVideoHeight = 720;
   static int _maxVideoDuration = 120;
+  static String _mixpanelToken = '';
 
   static bool get isInitialized => _isInitialized;
   static int get imageQuality => _imageQuality;
@@ -21,6 +22,7 @@ class EnvConfig {
   static int get maxVideoWidth => _maxVideoWidth;
   static int get maxVideoHeight => _maxVideoHeight;
   static int get maxVideoDuration => _maxVideoDuration;
+  static String get mixpanelToken => _mixpanelToken;
 
   /// Initialize the environment configuration
   static Future<void> initialize() async {
@@ -79,10 +81,20 @@ class EnvConfig {
       _maxVideoDuration = int.tryParse(maxVideoDurationStr) ?? 120;
       if (_maxVideoDuration < 0) _maxVideoDuration = 0;
 
+      // Parse MIXPANEL_TOKEN
+      _mixpanelToken = dotenv.env['MIXPANEL_TOKEN'] ?? '';
+
       if (kDebugMode) {
         debugPrint(
           'Environment configuration loaded: IMAGE_QUALITY=$_imageQuality, MAX_SIZE=${_maxImageWidth}x$_maxImageHeight, VIDEO_QUALITY=$videoQualityStr, MAX_VIDEO_SIZE=${_maxVideoWidth}x$_maxVideoHeight, MAX_VIDEO_DURATION=${_maxVideoDuration}s',
         );
+        if (_mixpanelToken.isNotEmpty && _mixpanelToken != 'YOUR_MIXPANEL_TOKEN_HERE') {
+          debugPrint(
+            '🔑 Mixpanel token loaded: ${_mixpanelToken.substring(0, 8)}...',
+          );
+        } else {
+          debugPrint('⚠️ No Mixpanel token found in .env');
+        }
       }
     } catch (e) {
       if (kDebugMode) {
@@ -96,6 +108,7 @@ class EnvConfig {
       _maxVideoWidth = 1280;
       _maxVideoHeight = 720;
       _maxVideoDuration = 120;
+      _mixpanelToken = '';
       _isInitialized = true;
     }
   }

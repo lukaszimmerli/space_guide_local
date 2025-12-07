@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flow_manager_saas/flow_manager.dart';
 import '../services/flow_tts_generation_service.dart';
+import '../services/mixpanel_service.dart';
 
 class FlowTtsGenerationDialog extends StatefulWidget {
   final FlowData flow;
@@ -198,8 +199,23 @@ class _FlowTtsGenerationDialogState extends State<FlowTtsGenerationDialog> {
             'Audio generation completed! Generated ${result.processedSteps} audio files.',
           );
         }
+
+        // Track successful TTS generation
+        MixpanelService.trackTtsGenerated(
+          guideId: widget.flow.id,
+          numberOfSteps: result.processedSteps,
+          voice: 'nova', // Default voice used in service
+          success: true,
+        );
       }
     } catch (e) {
+      // Track failed TTS generation
+      MixpanelService.trackTtsGenerated(
+        guideId: widget.flow.id,
+        numberOfSteps: widget.flow.flowSteps.length,
+        voice: 'nova',
+        success: false,
+      );
       if (!mounted) return;
 
       setState(() {

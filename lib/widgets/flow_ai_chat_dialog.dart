@@ -6,6 +6,7 @@ import 'package:carbon_icons/carbon_icons.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../services/flow_ai_manipulation_service.dart';
 import '../services/flow_ai_state_service.dart';
+import '../services/mixpanel_service.dart';
 
 /// Shows the AI chat as a full-screen modal bottom sheet
 void showFlowAiChat(BuildContext context, String flowId) {
@@ -494,6 +495,24 @@ class _FlowAiChatSheetState extends State<FlowAiChatSheet> {
     _aiStateService.addMessage(
       AiChatMessage(role: 'assistant', content: result.message),
     );
+
+    // Track AI chat usage
+    MixpanelService.trackAiChatUsed(
+      guideId: widget.flowId,
+      messageType: result.changesApplied ? 'modification' : 'query',
+      conversationLength: _aiStateService.conversationHistory.length,
+    );
+
+    // Track specific AI actions if any were performed
+    if (result.actions.isNotEmpty) {
+      for (final action in result.actions) {
+        MixpanelService.trackAiChatAction(
+          guideId: widget.flowId,
+          action: action,
+          accepted: result.changesApplied,
+        );
+      }
+    }
 
     // Mark pending changes if AI made modifications
     print('DEBUG: AI result - changesApplied: ${result.changesApplied}');

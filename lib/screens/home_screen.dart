@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'settings_screen.dart';
 import '../services/settings_service.dart';
 import '../services/timer_audio_service.dart';
+import '../services/mixpanel_service.dart';
 import '../utils/flow_screen_factory.dart';
 import '../widgets/flow_translation_dialog.dart';
 import '../widgets/flow_tts_generation_dialog.dart';
@@ -22,6 +23,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _showSearch = false;
   Key _flowListKey = UniqueKey();
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('========================================');
+    debugPrint('🏠 HOME SCREEN INIT');
+    debugPrint('🔍 Mixpanel initialized: ${MixpanelService.isInitialized}');
+    debugPrint('========================================');
+  }
 
   @override
   void didChangeDependencies() {
@@ -124,6 +134,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   onShare: (flow) => _shareFlow(context, flow),
                   onQRExport: (flow) => _exportFlowQR(context, flow),
                   onCreated: (flow) {
+                    // Track guide creation
+                    MixpanelService.trackGuideCreated(
+                      guideId: flow.id,
+                      category: flow.category,
+                      language: flow.language,
+                      numberOfSections: flow.flowSections.length,
+                      numberOfSteps: flow.flowSteps.length,
+                    );
+                    MixpanelService.incrementGuideCount();
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -145,6 +165,41 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                   },
                   onSelected: (flowData) {
+                    // Track guide viewed
+                    MixpanelService.trackGuideViewed(
+                      guideId: flowData.id,
+                      category: flowData.category,
+                      language: flowData.language,
+                      numberOfSteps: flowData.flowSteps.length,
+                      numberOfSections: flowData.flowSections.length,
+                    );
+                    MixpanelService.incrementGuidePlayCount();
+
+                    // Calculate average step length for detailed metrics
+                    final avgStepLength = flowData.flowSteps.isEmpty
+                        ? 0.0
+                        : flowData.flowSteps
+                                .map((s) => s.description.length)
+                                .reduce((a, b) => a + b) /
+                            flowData.flowSteps.length;
+
+                    // Track guide played with detailed metrics
+                    MixpanelService.trackGuidePlayed(
+                      guideId: flowData.id,
+                      category: flowData.category,
+                      language: flowData.language,
+                      totalSteps: flowData.flowSteps.length,
+                      averageStepLength: avgStepLength,
+                      numberOfSections: flowData.flowSections.length,
+                    );
+
+                    // Track comprehensive guide metrics
+                    MixpanelService.trackGuideMetrics(flowData);
+
+                    // Force flush events to Mixpanel immediately (for testing)
+                    MixpanelService.flush();
+                    debugPrint('🔄 Mixpanel: Events flushed to server');
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -4,6 +4,7 @@ import 'package:flow_manager_saas/flow_manager.dart';
 import 'package:provider/provider.dart';
 import '../services/settings_service.dart';
 import '../services/text_improvement_service.dart';
+import '../services/mixpanel_service.dart';
 
 class EnhancedStepDetailScreen extends StatefulWidget {
   final String stepId;
@@ -155,6 +156,13 @@ class _EnhancedStepDetailScreenState extends State<EnhancedStepDetailScreen> {
       stepDetailState.updateDescription(improvedText);
 
       debugPrint('Improved text: "$improvedText"');
+
+      // Track text improvement usage
+      MixpanelService.trackTextImprovement(
+        guideId: widget.flowId,
+        improvementType: 'improve',
+        textLength: currentDescription.length,
+      );
 
       // Show success message
       if (mounted) {

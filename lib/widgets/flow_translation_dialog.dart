@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flow_manager_saas/flow_manager.dart';
 import '../services/flow_translation_service.dart';
+import '../services/mixpanel_service.dart';
 
 class FlowTranslationDialog extends StatefulWidget {
   final FlowData flow;
@@ -182,6 +183,15 @@ class _FlowTranslationDialogState extends State<FlowTranslationDialog> {
       });
 
       if (translatedFlow != null) {
+        // Track successful translation
+        MixpanelService.trackTranslationUsed(
+          guideId: widget.flow.id,
+          fromLanguage: widget.flow.language,
+          toLanguage: _targetLanguage!,
+          numberOfSteps: widget.flow.flowSteps.length,
+          success: true,
+        );
+
         if (mounted) {
           Navigator.of(context).pop();
           FlowUtils.showSuccessSnackBar(
@@ -189,8 +199,28 @@ class _FlowTranslationDialogState extends State<FlowTranslationDialog> {
             'Flow translated to ${LanguageSelector.getLanguageName(_targetLanguage!)} and created successfully!',
           );
         }
+      } else {
+        // Track failed translation (null flow)
+        MixpanelService.trackTranslationUsed(
+          guideId: widget.flow.id,
+          fromLanguage: widget.flow.language,
+          toLanguage: _targetLanguage!,
+          numberOfSteps: widget.flow.flowSteps.length,
+          success: false,
+        );
       }
     } catch (e) {
+      // Track failed translation
+      if (_targetLanguage != null) {
+        MixpanelService.trackTranslationUsed(
+          guideId: widget.flow.id,
+          fromLanguage: widget.flow.language,
+          toLanguage: _targetLanguage!,
+          numberOfSteps: widget.flow.flowSteps.length,
+          success: false,
+        );
+      }
+
       if (mounted) {
         setState(() {
           _isTranslating = false;

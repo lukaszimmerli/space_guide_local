@@ -6,13 +6,34 @@ import 'screens/home_screen.dart';
 import 'theme/app_theme.dart';
 import 'services/settings_service.dart';
 import 'services/settings_service_adapter.dart';
+import 'services/mixpanel_service.dart';
 import 'config/env_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  debugPrint('========================================');
+  debugPrint('🚀 APP STARTING - MAIN() CALLED');
+  debugPrint('========================================');
+
   // Initialize environment configuration
-  await EnvConfig.initialize();
+  try {
+    await EnvConfig.initialize();
+    debugPrint('✅ ENV CONFIG INITIALIZED');
+  } catch (e, st) {
+    debugPrint('❌ ENV CONFIG ERROR: $e');
+    debugPrint('Stack: $st');
+  }
+
+  // Initialize Mixpanel analytics
+  debugPrint('🔵 STARTING MIXPANEL INITIALIZATION...');
+  try {
+    await MixpanelService.initialize();
+    debugPrint('✅ MIXPANEL INITIALIZATION COMPLETE - Status: ${MixpanelService.isInitialized}');
+  } catch (e, st) {
+    debugPrint('❌ MIXPANEL ERROR: $e');
+    debugPrint('Stack: $st');
+  }
 
   // Configure Flow Manager with environment settings
   FlowConfig.configure(
